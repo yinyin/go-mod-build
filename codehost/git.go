@@ -156,12 +156,7 @@ func (repo *GitRepo) PseudoVersion() (pseudoVersion string, err error) {
 }
 
 // Zip create module zip file.
-func (repo *GitRepo) Zip(w io.Writer, modulePath string) (err error) {
-	pseudoVer, err := repo.PseudoVersion()
-	if nil != err {
-		log.Printf("ERROR: cannot have pseudo version: %v", err)
-		return
-	}
+func (repo *GitRepo) Zip(w io.Writer, modulePath, moduleVersion string) (err error) {
 	tmpdir, err := ioutil.TempDir("", "go-mod-pack-codehost-git")
 	if nil != err {
 		log.Printf("ERROR: setup temporary folder for git archive failed: %v", err)
@@ -176,6 +171,6 @@ func (repo *GitRepo) Zip(w io.Writer, modulePath string) (err error) {
 	if err = cmd.Run(); nil != err {
 		return
 	}
-	err = convertToModuleZip(w, tmpzipfile, modulePath, pseudoVer)
+	err = convertToModuleZip(w, modulePath, moduleVersion, tmpzipfile)
 	return
 }

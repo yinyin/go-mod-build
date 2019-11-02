@@ -11,8 +11,8 @@ import (
 )
 
 // convertToModuleZip translate given VCS zip into module zip.
-func convertToModuleZip(w io.Writer, zipfilepath string, modulePath, moduleVersion string) (err error) {
-	zr, err := zip.OpenReader(zipfilepath)
+func convertToModuleZip(w io.Writer, modulePath, moduleVersion, inputZipPath string) (err error) {
+	zr, err := zip.OpenReader(inputZipPath)
 	if nil != err {
 		return
 	}
