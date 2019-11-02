@@ -35,3 +35,5 @@ Icon
 *.test
 *.out
 .glide/
+
+/go-mod-pack
