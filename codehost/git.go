@@ -2,11 +2,15 @@ package codehost
 
 import (
 	"bytes"
+	"io"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
-	"github.com/rogpeppe/go-internal/semver"
+	"golang.org/x/mod/semver"
 )
 
 const gitCommandName = "git"
@@ -149,4 +153,29 @@ func (repo *GitRepo) PseudoVersion() (pseudoVersion string, err error) {
 		return
 	}
 	return string(bytes.TrimSpace(buf)), nil
+}
+
+// Zip create module zip file.
+func (repo *GitRepo) Zip(w io.Writer, modulePath string) (err error) {
+	pseudoVer, err := repo.PseudoVersion()
+	if nil != err {
+		log.Printf("ERROR: cannot have pseudo version: %v", err)
+		return
+	}
+	tmpdir, err := ioutil.TempDir("", "go-mod-pack-codehost-git")
+	if nil != err {
+		log.Printf("ERROR: setup temporary folder for git archive failed: %v", err)
+		return
+	}
+	defer os.RemoveAll(tmpdir)
+	tmpzipfile := filepath.Join(tmpdir, "git-archive.zip")
+	var cmd *exec.Cmd
+	if cmd, err = repo.gitCmd("archive", "--format=zip", "--output", tmpzipfile, "HEAD"); nil != err {
+		return
+	}
+	if err = cmd.Run(); nil != err {
+		return
+	}
+	err = convertToModuleZip(w, tmpzipfile, modulePath, pseudoVer)
+	return
 }
