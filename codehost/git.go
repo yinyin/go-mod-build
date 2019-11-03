@@ -8,7 +8,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"time"
 
 	"golang.org/x/mod/semver"
 )
@@ -145,7 +147,7 @@ func (repo *GitRepo) PseudoVersion() (pseudoVersion string, err error) {
 		return tag, nil
 	}
 	var cmd *exec.Cmd
-	if cmd, err = repo.gitCmd("show", "--quiet", "--pretty=format:v0.0.0-%cd-%h", "--date=format-local:%Y%m%d%H%M%S", "--abbrev=12"); nil != err {
+	if cmd, err = repo.gitCmd("show", "--no-patch", "--pretty=format:v0.0.0-%cd-%h", "--date=format-local:%Y%m%d%H%M%S", "--abbrev=12"); nil != err {
 		return
 	}
 	buf, err := cmd.Output()
@@ -153,6 +155,24 @@ func (repo *GitRepo) PseudoVersion() (pseudoVersion string, err error) {
 		return
 	}
 	return string(bytes.TrimSpace(buf)), nil
+}
+
+// CommitTime get the commit time of current workcopy.
+func (repo *GitRepo) CommitTime() (commitTime time.Time, err error) {
+	var cmd *exec.Cmd
+	if cmd, err = repo.gitCmd("show", "--no-patch", "--pretty=format:%ct"); nil != err {
+		return
+	}
+	buf, err := cmd.Output()
+	if nil != err {
+		return
+	}
+	epoch, err := strconv.ParseInt(string(bytes.TrimSpace(buf)), 10, 64)
+	if nil != err {
+		return
+	}
+	commitTime = time.Unix(epoch, 0)
+	return
 }
 
 // Zip create module zip file.
