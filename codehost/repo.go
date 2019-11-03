@@ -2,12 +2,16 @@ package codehost
 
 import (
 	"io"
+	"time"
 )
 
 // Repo defines interface of operations in VCS repository.
 type Repo interface {
 	// PseudoVersion generate pseudo version.
 	PseudoVersion() (pseudoVersion string, err error)
+
+	// CommitTime get the commit time of current workcopy.
+	CommitTime() (commitTime time.Time, err error)
 
 	// Zip create module zip file.
 	Zip(w io.Writer, modulePath, moduleVersion string) (err error)
