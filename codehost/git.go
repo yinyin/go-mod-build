@@ -171,7 +171,7 @@ func (repo *GitRepo) CommitTime() (commitTime time.Time, err error) {
 	if nil != err {
 		return
 	}
-	commitTime = time.Unix(epoch, 0)
+	commitTime = time.Unix(epoch, 0).UTC()
 	return
 }
 
