@@ -144,6 +144,27 @@ func (f *ModuleProxyFolder) AddVersionToList(ver string) (err error) {
 	return f.SaveVersionList(vers)
 }
 
+// ImportVersionsToList feed version strings into list file
+func (f *ModuleProxyFolder) ImportVersionsToList(versions []string) (err error) {
+	vers, err := f.LoadVersionList()
+	if nil != err {
+		return
+	}
+	m := make(map[string]struct{})
+	for _, v := range vers {
+		m[v.Version] = struct{}{}
+	}
+	for _, vText := range versions {
+		if _, ok := m[vText]; !ok {
+			vers = append(vers, module.Version{
+				Path:    f.ModulePath,
+				Version: vText,
+			})
+		}
+	}
+	return f.SaveVersionList(vers)
+}
+
 // ContainVersion check if given version is contain in folder.
 func (f *ModuleProxyFolder) ContainVersion(ver string) (hasVersion bool, err error) {
 	vers, err := f.LoadVersionList()
