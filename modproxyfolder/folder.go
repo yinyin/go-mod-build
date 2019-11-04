@@ -81,9 +81,15 @@ func (f *ModuleProxyFolder) prepareVersFolder() (err error) {
 	return
 }
 
+// VersionListFilePath return the file path of version list file.
+func (f *ModuleProxyFolder) VersionListFilePath() (listFilePath string) {
+	listFilePath = filepath.Join(f.FolderPath, moduleVersFolderName, moduleListFileName)
+	return
+}
+
 // LoadVersionList fetch versions from list file.
 func (f *ModuleProxyFolder) LoadVersionList() (vers []module.Version, err error) {
-	listFilePath := filepath.Join(f.FolderPath, moduleVersFolderName, moduleListFileName)
+	listFilePath := f.VersionListFilePath()
 	fp, err := os.Open(listFilePath)
 	if nil != err {
 		return
@@ -112,7 +118,7 @@ func (f *ModuleProxyFolder) SaveVersionList(vers []module.Version) (err error) {
 	if err = f.prepareVersFolder(); nil != err {
 		return
 	}
-	listFilePath := filepath.Join(f.FolderPath, moduleVersFolderName, moduleListFileName)
+	listFilePath := f.VersionListFilePath()
 	fp, err := os.Create(listFilePath)
 	if nil != err {
 		return
