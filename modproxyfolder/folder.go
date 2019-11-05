@@ -136,7 +136,11 @@ func (f *ModuleProxyFolder) SaveVersionList(vers []module.Version) (err error) {
 func (f *ModuleProxyFolder) AddVersionToList(ver string) (err error) {
 	vers, err := f.LoadVersionList()
 	if nil != err {
-		return
+		if os.IsNotExist(err) {
+			err = nil
+		} else {
+			return
+		}
 	}
 	for _, v := range vers {
 		if v.Version == ver {
@@ -157,7 +161,11 @@ func (f *ModuleProxyFolder) ImportVersionsToList(versions []string) (err error) 
 	}
 	vers, err := f.LoadVersionList()
 	if nil != err {
-		return
+		if os.IsNotExist(err) {
+			err = nil
+		} else {
+			return
+		}
 	}
 	m := make(map[string]struct{})
 	for _, v := range vers {
