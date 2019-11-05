@@ -152,6 +152,9 @@ func (f *ModuleProxyFolder) AddVersionToList(ver string) (err error) {
 
 // ImportVersionsToList feed version strings into list file
 func (f *ModuleProxyFolder) ImportVersionsToList(versions []string) (err error) {
+	if len(versions) == 0 {
+		return
+	}
 	vers, err := f.LoadVersionList()
 	if nil != err {
 		return
