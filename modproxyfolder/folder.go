@@ -75,6 +75,7 @@ func (f *ModuleProxyFolder) prepareVersFolder() (err error) {
 		err = os.MkdirAll(p, 0755)
 	}
 	if nil != err {
+		log.Printf("ERROR: cannot have version folder [%s]: %v", p, err)
 		return
 	}
 	f.hasVersFolder = true
