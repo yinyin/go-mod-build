@@ -197,6 +197,17 @@ func (f *ModuleProxyFolder) ContainVersion(ver string) (hasVersion bool, err err
 	return false, nil
 }
 
+// VersionedFilePath build file path with given version and file suffix.
+// This function will not prepare folders if not existed.
+func (f *ModuleProxyFolder) VersionedFilePath(ver, suffix string) (p string, err error) {
+	escapedVer, err := module.EscapeVersion(ver)
+	if nil != err {
+		return
+	}
+	p = filepath.Join(f.FolderPath, moduleVersFolderName, escapedVer+"."+suffix)
+	return
+}
+
 func (f *ModuleProxyFolder) createVersionedFile(ver, suffix string) (fp *os.File, err error) {
 	escapedVer, err := module.EscapeVersion(ver)
 	if nil != err {
