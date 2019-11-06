@@ -209,14 +209,13 @@ func (f *ModuleProxyFolder) VersionedFilePath(ver, suffix string) (p string, err
 }
 
 func (f *ModuleProxyFolder) createVersionedFile(ver, suffix string) (fp *os.File, err error) {
-	escapedVer, err := module.EscapeVersion(ver)
+	p, err := f.VersionedFilePath(ver, suffix)
 	if nil != err {
 		return
 	}
 	if err = f.prepareVersFolder(); nil != err {
 		return
 	}
-	p := filepath.Join(f.FolderPath, moduleVersFolderName, escapedVer+"."+suffix)
 	return os.Create(p)
 }
 
