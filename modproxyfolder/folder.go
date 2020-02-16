@@ -239,6 +239,27 @@ func (f *ModuleProxyFolder) SaveInfo(info Info) (err error) {
 	return
 }
 
+// LatestInfoFilePath get the info file path of latest version.
+func (f *ModuleProxyFolder) LatestInfoFilePath() (p string, err error) {
+	vers, err := f.LoadVersionList()
+	if nil != err {
+		return
+	}
+	for idx := len(vers) - 1; idx >= 0; idx-- {
+		if p, err = f.VersionedFilePath(vers[idx].Version, moduleInfoFileSuffix); nil != err {
+			return
+		}
+		if _, err = os.Stat(p); nil == err {
+			return
+		}
+		if !os.IsNotExist(err) {
+			return
+		}
+	}
+	err = ErrEmptyVersion
+	return
+}
+
 // CreateGoMod open the mod file for write.
 func (f *ModuleProxyFolder) CreateGoMod(ver string) (fp *os.File, err error) {
 	if ver == "" {
